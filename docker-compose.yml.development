@@ -1,0 +1,31 @@
+services:
+  php-fpm:
+    volumes:
+      - ./:/app
+      - vendor:/app/vendor
+
+  nginx:
+    restart: always
+    ports:
+      - 127.0.0.1:8081:80
+
+  mysql:
+    restart: always
+    environment:
+      MYSQL_PASSWORD: development
+      MYSQL_ROOT_PASSWORD: development
+    volumes:
+      - ./database/mysql:/var/lib/mysql
+      - ./docker/mysql-development.cnf:/etc/mysql/conf.d/mysql-development.cnf
+    ports:
+      - 127.0.0.1:3306:3306
+
+  deploy:
+    restart: "no"
+
+  mailhog:
+    restart: always
+    ports:
+      - 127.0.0.1:8025:8025
+      - 127.0.0.1:1025:1025
+    image: mailhog/mailhog

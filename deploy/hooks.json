@@ -1,0 +1,22 @@
+[
+  {
+    "id": "deploy",
+    "execute-command": "/app/deploy/deploy.sh",
+    "command-working-directory": "/app",
+    "trigger-rule": {
+      "and": [
+        {
+          "match": {
+            "type": "value",
+            "value": "d2c8d6551f01698115ef7b6382be8b3e",
+            "parameter":
+            {
+              "source": "url",
+              "name": "key"
+            }
+          }
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+    php-fpm:
+        restart: always
+        build:
+            context: ./
+            dockerfile: ./docker/php-fpm.Dockerfile
+        volumes:
+            - ./:/app
+        depends_on:
+            - mysql
+
+    nginx:
+        restart: always
+        build:
+            context: ./
+            dockerfile: ./docker/nginx.Dockerfile
+        volumes:
+            - ./:/app
+        depends_on:
+            - php-fpm
+
+    mysql:
+        restart: always
+        image: mysql
+        environment:
+            MYSQL_DATABASE: leadity_hp
+            MYSQL_USER: leadity_hp
+            MYSQL_PASSWORD: ${DB_PASSWORD:-}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-}
+        volumes:
+            - ./:/app
+
+    deploy:
+        restart: always
+        build:
+            context: ./
+            dockerfile: ./docker/Dockerfile.deploy
+        volumes:
+            - ./:/app
+        depends_on:
+            - mysql
+
+

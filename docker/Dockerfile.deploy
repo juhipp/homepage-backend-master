@@ -1,0 +1,16 @@
+FROM php:8.1.7-cli-bullseye
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y libonig-dev libpng-dev libjpeg-dev git vim libzip-dev zip ssh rsync webhook curl \
+    && apt-get clean
+
+RUN docker-php-ext-install pdo_mysql mbstring zip gd opcache
+RUN usermod --shell /bin/bash www-data
+RUN chown www-data:www-data /var/www
+RUN mkdir -p /var/www/.ssh && chmod 700 /var/www/.ssh && chown www-data:www-data /var/www/.ssh
+
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+USER www-data
+WORKDIR /app
+ENTRYPOINT ["webhook", "-hotreload", "-hooks", "/app/deploy/hooks.json"]
